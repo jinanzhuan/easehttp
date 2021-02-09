@@ -1,0 +1,3 @@
+include ':easehttp'
+include ':app'
+rootProject.name = "EaseHttp"
