@@ -1,4 +1,8 @@
 apply plugin: 'com.android.library'
+
+group = "com.github.jinanzhuan"
+archivesBaseName = "ease-http"
+version = "1.0.0"
 apply plugin: 'maven'
 apply plugin: 'signing'
 
@@ -22,10 +26,19 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
+}
+
+configurations {
+    deployerJars
 }
 
 task javadoc(type: Javadoc) {
@@ -55,12 +68,8 @@ signing {
     sign configurations.archives
 }
 
-group = "com.github.jinanzhuan"
-archivesBaseName = "ease-http"
-version = "1.0.0"
-
 Properties properties = new Properties()
-properties.load(file('../gradle.properties').newDataInputStream())
+properties.load(file('./gradle.properties').newDataInputStream())
 
 uploadArchives {
     repositories {
@@ -76,18 +85,18 @@ uploadArchives {
             }
 
             pom.project {
+                version version
                 name 'easehttp'
-                packaging 'jar'
+                packaging 'aar'
                 // optionally artifactId can be defined here
                 groupId group
                 artifactId archivesBaseName
-                version version
                 description 'A smart http request framework.'
                 url 'https://github.com/jinanzhuan/easehttp'
 
                 scm {
-                    connection 'scm:git:https://github.com/jinanzhuan/easehttp.git'
-                    developerConnection 'scm:git:https://github.com/jinanzhuan/easehttp.git'
+                    connection 'scm:git@github.com:jinanzhuan/easehttp.git'
+                    developerConnection 'scm:git@github.com:jinanzhuan/easehttp.git'
                     url 'https://github.com/jinanzhuan/easehttp.git'
                 }
 
@@ -101,7 +110,7 @@ uploadArchives {
                 developers {
                     developer {
                         id 'neilLiu'
-                        name 'neilLiu'
+                        name 'Neil Liu'
                         email 'neil.liu@easemob.com'
                     }
                 }
@@ -109,3 +118,4 @@ uploadArchives {
         }
     }
 }
+
