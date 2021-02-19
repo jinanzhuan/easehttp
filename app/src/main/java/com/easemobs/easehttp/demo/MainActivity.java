@@ -1,8 +1,9 @@
-package com.easemobs.easehttp;
+package com.easemobs.easehttp.demo;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
 
 public class MainActivity extends AppCompatActivity {
 
