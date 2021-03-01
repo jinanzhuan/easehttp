@@ -1,0 +1,97 @@
+group = "com.github.jinanzhuan"
+archivesBaseName = "ease-http"
+version = android.defaultConfig.versionName
+apply plugin: 'maven'
+apply plugin: 'signing'
+
+configurations {
+    deployerJars
+}
+
+task javadoc(type: Javadoc) {
+    options {
+        encoding 'UTF-8'
+        charSet 'UTF-8'
+    }
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+artifacts {
+    archives javadocJar, sourcesJar
+}
+
+signing {
+    sign configurations.archives
+}
+
+Properties properties = new Properties()
+properties.load(file('./gradle.properties').newDataInputStream())
+
+nexusStaging {
+    packageGroup = "$group" //optional if packageGroup == project.getGroup()
+    stagingProfileId = "$group" //when not defined will be got from server using "packageGroup"
+    username = properties.getProperty("ossrhUsername")
+    password = properties.getProperty("ossrhPassword")
+    stagingRepositoryId = "comgithubjinanzhuan-1004"
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: properties.getProperty("ossrhUsername"), password: properties.getProperty("ossrhPassword"))
+            }
+
+            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                authentication(userName: properties.getProperty("ossrhUsername"), password: properties.getProperty("ossrhPassword"))
+            }
+
+            pom.project {
+                //version version
+                name 'easehttp'
+                packaging 'aar'
+                // optionally artifactId can be defined here
+                //println "current groupId:$group"
+                //groupId group
+                //artifactId archivesBaseName
+                description 'A smart http request framework.'
+                url 'https://github.com/jinanzhuan/easehttp'
+
+                scm {
+                    connection 'scm:git@github.com:jinanzhuan/easehttp.git'
+                    developerConnection 'scm:git@github.com:jinanzhuan/easehttp.git'
+                    url 'https://github.com/jinanzhuan/easehttp.git'
+                }
+
+                licenses {
+                    license {
+                        name 'The Apache License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id 'neilLiu'
+                        name 'Neil Liu'
+                        email 'neil.liu@easemob.com'
+                    }
+                }
+            }
+        }
+    }
+}
+
