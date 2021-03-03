@@ -43,7 +43,7 @@ nexusStaging {
     stagingProfileId = "$group" //when not defined will be got from server using "packageGroup"
     username = properties.getProperty("ossrhUsername")
     password = properties.getProperty("ossrhPassword")
-    stagingRepositoryId = "comgithubjinanzhuan-1004"
+    stagingRepositoryId = "comgithubjinanzhuan-1008"
 }
 
 uploadArchives {
